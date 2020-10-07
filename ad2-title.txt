@@ -4,7 +4,7 @@
 ! Version: 201412030951
 ! Last Modified: 201412030952
 ! Homepage: https://adf.minggo.eu.org
-!
-!本规则合并自乘风视频广告过滤规则、EasylistChina、EasylistLite、CJX'sAnnoyance
-!仅合并规则，未做其余任何处理
+! 本规则合并自乘风视频广告过滤规则、EasylistChina、EasylistLite、CJX'sAnnoyance
+! 仅合并规则，未做其余任何处理
+! 如有任何疑问、意见或建议，请反馈至：HalfLife吧
 !

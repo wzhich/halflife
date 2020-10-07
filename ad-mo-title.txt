@@ -4,7 +4,6 @@
 ! Version: 201412030951
 ! Last Modified: 201412030952
 ! Homepage: https://adf.minggo.eu.org
-!
-!本规则合并自Easylist、EasylistChina、EasyPrivacy、CJX'sAnnoyance
-!如有任何疑问、意见或建议，请反馈至：HalfLife吧
+! 本规则合并自Easylist、EasylistChina、EasyPrivacy、CJX'sAnnoyance
+! 如有任何疑问、意见或建议，请反馈至：HalfLife吧
 !

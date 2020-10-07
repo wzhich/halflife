@@ -39,40 +39,61 @@ jobs:
         with:
           ref: workplace
 
+      - name: Checkout the "release" branch
+        uses: actions/checkout@v2
+        with:
+          ref: release
+          path: old
+
       - name: Get every files
         run: |
-          mkdir -p ./new/
-          curl -sSL $EASYLIST_URL | sed -e '/^! /d' -e '1c ! EasyList' -e '/^!$/d' -e '/The End/d'  -e '/^$/d' > ./new/easylist.txt
-          curl -sSL $EASYLISTCHINA_URL | sed -e '/^! /d' -e '1c ! EasyList China' -e '/^!$/d' -e '/The End/d'  -e '/^$/d' > ./new/easylistchina.txt
-          curl -sSL $EASYPRIVACY_URL | sed -e '/^! /d' -e '1c ! EasyPrivacy' -e '/^!$/d' > ./new/easyprivacy.txt
-          curl -sSL $CJXLIST_URL | sed -e '/^! /d' -e '1c ! EasyList Lite' -e '/^!$/d' -e '/The End/d'  -e '/^$/d' > ./new/cjxlist.txt
-          curl -sSL $CJX_ANNOYANCE_URL | sed -e '/^! /d' -e "1c ! CJX's Annoyance List" -e '/^!$/d' -e '/The End/d'  -e '/^$/d' | sed '/热门话题/,+1d' > ./new/cjx-annoyance.txt
-          curl -sSL $XINGGSF_MV_URL | sed -e '/^! /d' -e '1c ! 乘风 视频广告过滤规则' -e '/^!$/d' -e '/^$/d' > ./new/xinggsf-mv.txt
-          curl -sSL $ANTIADBLOCKFILTERS_URL | sed -e '1c ! Adblock Warning Removal List' -e '/^! Checksum/,/! Please check our guidelines/d' -e '/^!$/d' -e '/The End/d'  -e '/^$/d' > ./new/antiadblockfilters.txt
-          curl -sSL $ABP_FILTERS_ANTI_CV_URL | sed -e '1c ! abp-filters-anti-cv' -e '/^! Checksum/,/adblockplus.org/d' -e '/^!$/d' -e '/The End/d'  -e '/^$/d' > ./new/abp-filters-anti-cv.txt
-          curl -sSL $ANTI_ADBLOCK_KILLER_FILTERS_URL | sed -e '1c ! AakList (Anti-Adblock Killer)' -e '/^! Title/,/^! RegExpVisualizer/d' -e '/^!$/d' -e '/The End/d'  -e '/^$/d' > ./new/anti-adblock-killer-filters.txt
-          for i in $(ls ./new/*.txt); do
+          mkdir -p ./download/
+          curl -sSL $EASYLIST_URL | sed -e '/^! /d' -e '1c ! EasyList' -e '/^!$/d' -e '/The End/d'  -e '/^$/d' > ./download/easylist.txt
+          curl -sSL $EASYLISTCHINA_URL | sed -e '/^! /d' -e '1c ! EasyList China' -e '/^!$/d' -e '/The End/d'  -e '/^$/d' > ./download/easylistchina.txt
+          curl -sSL $EASYPRIVACY_URL | sed -e '/^! /d' -e '1c ! EasyPrivacy' -e '/^!$/d' > ./download/easyprivacy.txt
+          curl -sSL $CJXLIST_URL | sed -e '/^! /d' -e '1c ! EasyList Lite' -e '/^!$/d' -e '/The End/d'  -e '/^$/d' > ./download/cjxlist.txt
+          curl -sSL $CJX_ANNOYANCE_URL | sed -e '/^! /d' -e "1c ! CJX's Annoyance List" -e '/^!$/d' -e '/The End/d'  -e '/^$/d' | sed '/热门话题/,+1d' > ./download/cjx-annoyance.txt
+          curl -sSL $XINGGSF_MV_URL | sed -e '/^! /d' -e '1c ! 乘风 视频广告过滤规则' -e '/^!$/d' -e '/^$/d' > ./download/xinggsf-mv.txt
+          curl -sSL $ANTIADBLOCKFILTERS_URL | sed -e '1c ! Adblock Warning Removal List' -e '/^! Checksum/,/! Please check our guidelines/d' -e '/^!$/d' -e '/The End/d'  -e '/^$/d' > ./download/antiadblockfilters.txt
+          curl -sSL $ABP_FILTERS_ANTI_CV_URL | sed -e '1c ! abp-filters-anti-cv' -e '/^! Checksum/,/adblockplus.org/d' -e '/^!$/d' -e '/The End/d'  -e '/^$/d' > ./download/abp-filters-anti-cv.txt
+          curl -sSL $ANTI_ADBLOCK_KILLER_FILTERS_URL | sed -e '1c ! AakList (Anti-Adblock Killer)' -e '/^! Title/,/^! RegExpVisualizer/d' -e '/^!$/d' -e '/The End/d'  -e '/^$/d' > ./download/anti-adblock-killer-filters.txt
+          for i in $(ls ./download/*.txt); do
             echo "" >> $i
           done
 
       - name: Generate adblock files
         run: |
-          mkdir -p ./pre/
-          cd ./new
-          cat ../ad-pc-title.txt ../GeneralBlock.txt ../TiebaBlock.txt easylist.txt easylistchina.txt easyprivacy.txt cjx-annoyance.txt xinggsf-mv.txt > ../pre/ad-pc.txt
-          cat ../ad-mo-title.txt ../GeneralBlock.txt easylist.txt easylistchina.txt easyprivacy.txt cjx-annoyance.txt > ../pre/ad-mo.txt
-          cat ../ad-title.txt ../GeneralBlock.txt ../TiebaBlock.txt xinggsf-mv.txt easylistchina.txt cjxlist.txt cjx-annoyance.txt > ../pre/ad.txt
-          cat ../ad2-title.txt xinggsf-mv.txt easylistchina.txt cjxlist.txt cjx-annoyance.txt > ../pre/ad2.txt
-          cat ../ad3-title.txt xinggsf-mv.txt easylistchina.txt cjxlist.txt cjx-annoyance.txt easyprivacy.txt > ../pre/ad3.txt
-          cat ../ad4-title.txt antiadblockfilters.txt abp-filters-anti-cv.txt anti-adblock-killer-filters.txt > ../pre/ad-edentw.txt
+          mkdir -p ./new/
+          cd ./download
+          cat ../ad-pc-title.txt ../GeneralBlock.txt ../TiebaBlock.txt easylist.txt easylistchina.txt easyprivacy.txt cjx-annoyance.txt xinggsf-mv.txt > ../new/ad-pc.txt
+          cat ../ad-mo-title.txt ../GeneralBlock.txt easylist.txt easylistchina.txt easyprivacy.txt cjx-annoyance.txt > ../new/ad-mo.txt
+          cat ../ad-title.txt ../GeneralBlock.txt ../TiebaBlock.txt xinggsf-mv.txt easylistchina.txt cjxlist.txt cjx-annoyance.txt > ../new/ad.txt
+          cat ../ad2-title.txt xinggsf-mv.txt easylistchina.txt cjxlist.txt cjx-annoyance.txt > ../new/ad2.txt
+          cat ../ad3-title.txt xinggsf-mv.txt easylistchina.txt cjxlist.txt cjx-annoyance.txt easyprivacy.txt > ../new/ad3.txt
+          cat ../ad-edentw-title.txt antiadblockfilters.txt abp-filters-anti-cv.txt anti-adblock-killer-filters.txt > ../new/ad-edentw.txt
+          for i in $(ls ./new/*.txt); do
+            sed -i 's#^$##' $i
+          done
 
-      - name: addChecksum
+      - name: Diff and addChecksum
         run: |
+          mkdir -p ./diff/
+          mkdir -p ./pre/
           chmod +x addChecksum.pl
-          cd ./pre
+          cd ./old/
           for i in $(ls *.txt); do
-            sed -i -e "s#201412030951#${{ env.TAG_NAME }}#" -e "s#201412030952#${{ env.MODIFIED_TIME }}#" $i
-            perl ../addChecksum.pl $i
+            sed '1,/^!$/d' ../old/$i > ../diff/$i
+          done
+          cd ../new
+          for i in $(ls *.txt); do
+            if diff -q $i ../diff/$i; then
+              cp -f ../old/$i ../pre/$i
+            else
+              titleName=$(echo "$i" |sed 's#.txt#-title.txt#')
+              cat ../$titleName $i > ../pre/$i
+              sed -i -e "s#201412030951#${{ env.TAG_NAME }}#" -e "s#201412030952#${{ env.MODIFIED_TIME }}#" ../pre/$i
+              perl ../addChecksum.pl ../pre/$i
+            fi
           done
 
       - name: zip files and generate sha256 hash
