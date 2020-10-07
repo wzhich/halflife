@@ -65,12 +65,12 @@ jobs:
         run: |
           mkdir -p ./new/
           cd ./download
-          cat ../ad-pc-title.txt ../GeneralBlock.txt ../TiebaBlock.txt easylist.txt easylistchina.txt easyprivacy.txt cjx-annoyance.txt xinggsf-mv.txt > ../new/ad-pc.txt
-          cat ../ad-mo-title.txt ../GeneralBlock.txt easylist.txt easylistchina.txt easyprivacy.txt cjx-annoyance.txt > ../new/ad-mo.txt
-          cat ../ad-title.txt ../GeneralBlock.txt ../TiebaBlock.txt xinggsf-mv.txt easylistchina.txt cjxlist.txt cjx-annoyance.txt > ../new/ad.txt
-          cat ../ad2-title.txt xinggsf-mv.txt easylistchina.txt cjxlist.txt cjx-annoyance.txt > ../new/ad2.txt
-          cat ../ad3-title.txt xinggsf-mv.txt easylistchina.txt cjxlist.txt cjx-annoyance.txt easyprivacy.txt > ../new/ad3.txt
-          cat ../ad-edentw-title.txt antiadblockfilters.txt abp-filters-anti-cv.txt anti-adblock-killer-filters.txt > ../new/ad-edentw.txt
+          cat ../GeneralBlock.txt ../TiebaBlock.txt easylist.txt easylistchina.txt easyprivacy.txt cjx-annoyance.txt xinggsf-mv.txt > ../new/ad-pc.txt
+          cat ../GeneralBlock.txt easylist.txt easylistchina.txt easyprivacy.txt cjx-annoyance.txt > ../new/ad-mo.txt
+          cat ../GeneralBlock.txt ../TiebaBlock.txt xinggsf-mv.txt easylistchina.txt cjxlist.txt cjx-annoyance.txt > ../new/ad.txt
+          cat xinggsf-mv.txt easylistchina.txt cjxlist.txt cjx-annoyance.txt > ../new/ad2.txt
+          cat xinggsf-mv.txt easylistchina.txt cjxlist.txt cjx-annoyance.txt easyprivacy.txt > ../new/ad3.txt
+          cat antiadblockfilters.txt abp-filters-anti-cv.txt anti-adblock-killer-filters.txt > ../new/ad-edentw.txt
           for i in $(ls ./new/*.txt); do
             sed -i 's#^$##' $i
           done
@@ -95,12 +95,6 @@ jobs:
               perl ../addChecksum.pl ../pre/$i
             fi
           done
-
-      - name: zip files and generate sha256 hash
-        run: |
-          cd ./pre
-          zip rules.zip ad*.txt
-          sha256sum rules.zip > rules.zip.sha256sum
 
       - name: Release and upload assets
         uses: softprops/action-gh-release@v1
