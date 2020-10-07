@@ -2,9 +2,9 @@ name: Build YueDu Sources files
 on:
   schedule:
     - cron: "0 6 * * *"
-  push:
-    branches:
-      - workplace
+#  push:
+#    branches:
+#      - workplace
 
 jobs:
   build:
@@ -82,7 +82,7 @@ jobs:
         run: |
           mkdir -p ./publish
           cd ./old
-          for i in $(ls *.txt); do
+          for i in $(ls -l | grep ^[^d] | awk '{print $9}'); do
             cp -f $i ../publish/$i
           done
           cd ../new

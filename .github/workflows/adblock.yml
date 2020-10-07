@@ -84,7 +84,7 @@ jobs:
           for i in $(ls *.txt); do
             sed '1,/^!$/d' ../old/$i > ../diff/$i
           done
-          for i in $(ls *|grep -v '^ad*' ); do
+          for i in $(ls -l | grep ^[^d] | awk '{print $9}'|grep -v '^ad*' ); do
             cp -f ../old/$i ../publish/$i
           done
           cd ../new
