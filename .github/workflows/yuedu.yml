@@ -1,10 +1,10 @@
-name: Build adblock rules files
+name: Build YueDu Sources files
 on:
   schedule:
     - cron: "0 6 * * *"
-#  push:
-#    branches:
-#      - workplace
+  push:
+    branches:
+      - workplace
 
 jobs:
   build:
@@ -20,16 +20,14 @@ jobs:
         run: |
           echo "RELEASE_NAME=Released on $(date -d "8 hour" -u +%Y%m%d%H%M)" >> $GITHUB_ENV
           echo "TAG_NAME=$(date -d "8 hour" -u +%Y%m%d%H%M)" >> $GITHUB_ENV
-          echo "MODIFIED_TIME=$(date -d "8 hour" -u "+%Y年%m月%d日 %H:%M")" >> $GITHUB_ENV
-          echo "EASYLIST_URL=https://easylist-downloads.adblockplus.org/easylist.txt" >> $GITHUB_ENV
-          echo "EASYLISTCHINA_URL=https://easylist-downloads.adblockplus.org/easylistchina.txt" >> $GITHUB_ENV
-          echo "EASYPRIVACY_URL=https://easylist-downloads.adblockplus.org/easyprivacy.txt" >> $GITHUB_ENV
-          echo "CJXLIST_URL=https://raw.githubusercontent.com/cjx82630/cjxlist/master/cjxlist.txt" >> $GITHUB_ENV
-          echo "CJX_ANNOYANCE_URL=https://raw.githubusercontent.com/cjx82630/cjxlist/master/cjx-annoyance.txt" >> $GITHUB_ENV
-          echo "ANTI_ADBLOCK_KILLER_FILTERS_URL=https://raw.githubusercontent.com/reek/anti-adblock-killer/master/anti-adblock-killer-filters.txt" >> $GITHUB_ENV
-          echo "ANTIADBLOCKFILTERS_URL=https://easylist-downloads.adblockplus.org/antiadblockfilters.txt" >> $GITHUB_ENV
-          echo "ABP_FILTERS_ANTI_CV_URL=https://easylist-downloads.adblockplus.org/abp-filters-anti-cv.txt" >> $GITHUB_ENV
-          echo "XINGGSF_MV_URL=https://gitee.com/xinggsf/Adblock-Rule/raw/master/mv.txt" >> $GITHUB_ENV
+          echo "SHUYUAN_INDEX_URL=http://ku.mumuceo.com/yuedu/shuyuan/index.html" >> $GITHUB_ENV
+          echo "SHUYUAN_JSON_URL=http://ku.mumuceo.com/yuedu/shuyuan/jsons" >> $GITHUB_ENV
+          echo "RSSYUAN_INDEX_URL=http://ku.mumuceo.com/yuedu/rssyuan/index.html" >> $GITHUB_ENV
+          echo "RSSYUAN_JSON_URL=http://ku.mumuceo.com/yuedu/rssyuan/jsons" >> $GITHUB_ENV
+          echo "HOMEPAGE='Origin: http://ku.mumuceo.com'" >> $GITHUB_ENV
+          echo "REFERER='Referer: http://ku.mumuceo.com/yuedu/index/index.html'" >> $GITHUB_ENV
+          echo "USERAGENT='User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:71.0) Gecko/20100101 Firefox/71.0'" >> $GITHUB_ENV
+          echo "ACCEPTLANGUAGE='Accept-Language: zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2'" >> $GITHUB_ENV
           echo "GOPATH=$(dirname $GITHUB_WORKSPACE)" >> $GITHUB_ENV
           echo "$(dirname $GITHUB_WORKSPACE)/bin" >> $GITHUB_PATH
         shell: bash
@@ -39,72 +37,65 @@ jobs:
         with:
           ref: workplace
 
-      - name: Get every files
-        run: |
-          mkdir -p ./new/
-          curl -sSL $EASYLIST_URL | sed -e '/^! /d' -e '1c ! EasyList' -e '/^!$/d' -e '/The End/d'  -e '/^$/d' > ./new/easylist.txt
-          curl -sSL $EASYLISTCHINA_URL | sed -e '/^! /d' -e '1c ! EasyList China' -e '/^!$/d' -e '/The End/d'  -e '/^$/d' > ./new/easylistchina.txt
-          curl -sSL $EASYPRIVACY_URL | sed -e '/^! /d' -e '1c ! EasyPrivacy' -e '/^!$/d' > ./new/easyprivacy.txt
-          curl -sSL $CJXLIST_URL | sed -e '/^! /d' -e '1c ! EasyList Lite' -e '/^!$/d' -e '/The End/d'  -e '/^$/d' > ./new/cjxlist.txt
-          curl -sSL $CJX_ANNOYANCE_URL | sed -e '/^! /d' -e "1c ! CJX's Annoyance List" -e '/^!$/d' -e '/The End/d'  -e '/^$/d' | sed '/热门话题/,+1d' > ./new/cjx-annoyance.txt
-          curl -sSL $XINGGSF_MV_URL | sed -e '/^! /d' -e '1c ! 乘风 视频广告过滤规则' -e '/^!$/d' -e '/^$/d' > ./new/xinggsf-mv.txt
-          curl -sSL $ANTIADBLOCKFILTERS_URL | sed -e '1c ! Adblock Warning Removal List' -e '/^! Checksum/,/! Please check our guidelines/d' -e '/^!$/d' -e '/The End/d'  -e '/^$/d' > ./new/antiadblockfilters.txt
-          curl -sSL $ABP_FILTERS_ANTI_CV_URL | sed -e '1c ! abp-filters-anti-cv' -e '/^! Checksum/,/adblockplus.org/d' -e '/^!$/d' -e '/The End/d'  -e '/^$/d' > ./new/abp-filters-anti-cv.txt
-          curl -sSL $ANTI_ADBLOCK_KILLER_FILTERS_URL | sed -e '1c ! AakList (Anti-Adblock Killer)' -e '/^! Title/,/^! RegExpVisualizer/d' -e '/^!$/d' -e '/The End/d'  -e '/^$/d' > ./new/anti-adblock-killer-filters.txt
-          for i in $(ls ./new/*.txt); do
-            echo "" >> $i
-          done
-
-      - name: Generate adblock files
-        run: |
-          mkdir -p ./pre/
-          cd ./new
-          cat ../ad-pc-title.txt ../GeneralBlock.txt ../TiebaBlock.txt easylist.txt easylistchina.txt easyprivacy.txt cjx-annoyance.txt xinggsf-mv.txt > ../pre/ad-pc.txt
-          cat ../ad-mo-title.txt ../GeneralBlock.txt easylist.txt easylistchina.txt easyprivacy.txt cjx-annoyance.txt > ../pre/ad-mo.txt
-          cat ../ad-title.txt ../GeneralBlock.txt ../TiebaBlock.txt xinggsf-mv.txt easylistchina.txt cjxlist.txt cjx-annoyance.txt > ../pre/ad.txt
-          cat ../ad2-title.txt xinggsf-mv.txt easylistchina.txt cjxlist.txt cjx-annoyance.txt > ../pre/ad2.txt
-          cat ../ad3-title.txt xinggsf-mv.txt easylistchina.txt cjxlist.txt cjx-annoyance.txt easyprivacy.txt > ../pre/ad3.txt
-          cat ../ad4-title.txt antiadblockfilters.txt abp-filters-anti-cv.txt anti-adblock-killer-filters.txt > ../pre/ad-edentw.txt
-          for i in $(ls ./pre/*.txt); do
-            sed -i 's#^$##' $i
-          done
-
-      - name: addChecksum
-        run: |
-          chmod +x addChecksum.pl
-          cd ./pre
-          for i in $(ls *.txt); do
-            sed -i -e "s#201412030951#${{ env.TAG_NAME }}#" -e "s#201412030952#${{ env.MODIFIED_TIME }}#" $i
-            perl ../addChecksum.pl $i
-          done
-
-      - name: zip files and generate sha256 hash
-        run: |
-          cd ./pre
-          zip rules.zip ad*.txt
-          sha256sum rules.zip > rules.zip.sha256sum
-
-      - name: Release and upload assets
-        uses: softprops/action-gh-release@v1
+      - name: Checkout the "master" branch
+        uses: actions/checkout@v2
         with:
-          name: ${{ env.RELEASE_NAME }}
-          tag_name: ${{ env.TAG_NAME }}
-          draft: false
-          prerelease: false
-          files: |
-            ./pre/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ref: master
+          path: pre
 
-      - name: Git push assets to "release" branch
+      - name: Get ShuYuan files
+        run: |
+          mkdir -p ./download/
+          mkdir -p ./new/
+          cd ./download
+          #检索最新有搜索无声的书源id
+          curl -sSL "$SHUYUAN_INDEX_URL" -H "$USERAGENT" -H "Accept: application/json, text/javascript, */*; q=0.01" -H "$ACCEPTLANGUAGE" -H "Content-Type: application/x-www-form-urlencoded; charset=UTF-8" -H "X-Requested-With: XMLHttpRequest" -H "$HOMEPAGE" -H "Connection: keep-alive" -H "$REFERER" --data "page=1&limit=5000&keys=&ver=3&sousuo=&faxian=&audio=&tupian=" |grep -o '\"id\":[0-9]\+' |sed 's#\"id\":##' >yuedu-all.txt
+          #把书源id文件分割成每400行一个
+          split -l 400 yuedu-all.txt yueduid
+          #获取书源文件
+          for i in $(ls yueduid*);do
+            curl -s -o $i.txt "$SHUYUAN_JSON_URL?id=$(sed ':a;N;s/\n/-/g;ta' $i)" -H "$USERAGENT" -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8" -H "$ACCEPTLANGUAGE" -H "Connection: keep-alive" -H "Upgrade-Insecure-Requests: 1"
+            sed -i -e 's#^\[#,#' -e 's#\]$##' $i.txt
+          done
+          #合并书源文件
+          cat yueduid*.txt |sed -e 's#^,#\[#' -e 's#$#\]#' > ../new/yuedu.txt
+          rm -rf ../download
+
+      - name: Get RSSYuan files
+        run: |
+          mkdir -p ./download/
+          cd ./download
+          #检索订阅源id
+          curl -s "$RSSYUAN_INDEX_URL" -H "$USERAGENT" -H "Accept: application/json, text/javascript, */*; q=0.01" -H "$ACCEPTLANGUAGE" -H "Content-Type: application/x-www-form-urlencoded; charset=UTF-8" -H "X-Requested-With: XMLHttpRequest" -H "$HOMEPAGE" -H "Connection: keep-alive" -H "$REFERER" --data "page=1&limit=5000&keys=" |grep -o '\"id\":[0-9]\+' |sed 's#\"id\":##' >yuedu-all.txt
+          #把订阅源id文件分割成每400行一个
+          split -l 400 yuedu-all.txt yueduid
+          #获取订阅源文件
+          for i in $(ls yueduid*);do
+            curl -s -o $i.txt "$RSSYUAN_JSON_URL$(sed ':a;N;s/\n/-/g;ta' $i)" -H "$USERAGENT" -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" -H "$ACCEPTLANGUAGE" -H "Connection: keep-alive" -H "Upgrade-Insecure-Requests: 1"
+            sed -i -e 's#^\[#,#' -e 's#\]$##' $i.txt
+          done
+          #合并订阅源文件
+          cat yueduid*.txt |sed -e 's#^,#\[#' -e 's#$#\]#' > ../new/yuedu-rss.txt
+          rm -rf ../download
+
+      - name: Check files
+        run: |
+          cd ./new
+          for i in $(ls *.txt); do
+            if [ -s $i ]; then
+              cp -f $i ../pre/$i
+            fi
+          done
+
+      - name: Git push assets to "master" branch
         run: |
           cd pre
           git init
           git config --local user.name "actions"
           git config --local user.email "action@github.com"
-          git checkout -b release
+          git checkout -b master
           git add .
           git commit -m "${{ env.RELEASE_NAME }}"
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
           git remote set-url --add origin "https://${{ secrets.CODING_ACCOUNT }}:${{ secrets.CODING_PASSWORD }}@e.coding.net/${{ secrets.CODING_NAME }}/list.git"
-          git push -f -u origin release
+          git push -f -u origin master
