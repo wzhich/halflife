@@ -99,18 +99,6 @@ jobs:
             fi
           done
 
-      - name: Release and upload assets
-        uses: softprops/action-gh-release@v1
-        with:
-          name: ${{ env.RELEASE_NAME }}
-          tag_name: ${{ env.TAG_NAME }}
-          draft: false
-          prerelease: false
-          files: |
-            ./pre/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Git push assets to "master" branch
         run: |
           cd pre
