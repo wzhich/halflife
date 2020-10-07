@@ -68,7 +68,7 @@ jobs:
           chmod +x addChecksum.pl
           cd ./pre
           for i in $(ls *.txt); do
-            sed -i -e "s#201412030951#${{ env.TAG_NAME }}#g" -e "s#201412030952#${{ MODIFIED_TIME }}#g" $i
+            sed -i -e "s#201412030951#${{ env.TAG_NAME }}#" -e "s#201412030952#${{ env.MODIFIED_TIME }}#" $i
             perl ../addChecksum.pl $i
           done
 
