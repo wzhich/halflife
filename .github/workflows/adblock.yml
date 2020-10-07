@@ -39,10 +39,10 @@ jobs:
         with:
           ref: workplace
 
-      - name: Checkout the "release" branch
+      - name: Checkout the "master" branch
         uses: actions/checkout@v2
         with:
-          ref: release
+          ref: master
           path: old
 
       - name: Get every files
@@ -71,7 +71,7 @@ jobs:
           cat xinggsf-mv.txt easylistchina.txt cjxlist.txt cjx-annoyance.txt > ../new/ad2.txt
           cat xinggsf-mv.txt easylistchina.txt cjxlist.txt cjx-annoyance.txt easyprivacy.txt > ../new/ad3.txt
           cat antiadblockfilters.txt abp-filters-anti-cv.txt anti-adblock-killer-filters.txt > ../new/ad-edentw.txt
-          for i in $(ls ./new/*.txt); do
+          for i in $(ls ../new/*.txt); do
             sed -i '/^$/d' $i
           done
 
@@ -83,6 +83,9 @@ jobs:
           cd ./old/
           for i in $(ls *.txt); do
             sed '1,/^!$/d' ../old/$i > ../diff/$i
+          done
+          for i in $(ls *|grep -v '^ad*' ); do
+            cp -f ../old/$i ../pre/$i
           done
           cd ../new
           for i in $(ls *.txt); do
@@ -108,15 +111,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Git push assets to "release" branch
+      - name: Git push assets to "master" branch
         run: |
           cd pre
           git init
           git config --local user.name "actions"
           git config --local user.email "action@github.com"
-          git checkout -b release
+          git checkout -b master
           git add .
           git commit -m "${{ env.RELEASE_NAME }}"
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
           git remote set-url --add origin "https://${{ secrets.CODING_ACCOUNT }}:${{ secrets.CODING_PASSWORD }}@e.coding.net/${{ secrets.CODING_NAME }}/list.git"
-          git push -f -u origin release
+          git push -f -u origin master
