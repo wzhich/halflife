@@ -78,30 +78,42 @@ jobs:
       - name: Diff and addChecksum
         run: |
           mkdir -p ./diff/
-          mkdir -p ./pre/
+          mkdir -p ./publish/
           chmod +x addChecksum.pl
           cd ./old/
           for i in $(ls *.txt); do
             sed '1,/^!$/d' ../old/$i > ../diff/$i
           done
           for i in $(ls *|grep -v '^ad*' ); do
-            cp -f ../old/$i ../pre/$i
+            cp -f ../old/$i ../publish/$i
           done
           cd ../new
           for i in $(ls *.txt); do
             if diff -q $i ../diff/$i; then
-              cp -f ../old/$i ../pre/$i
+              cp -f ../old/$i ../publish/$i
             else
               titleName=$(echo "$i" |sed 's#.txt#-title.txt#')
-              cat ../$titleName $i > ../pre/$i
-              sed -i -e "s#201412030951#${{ env.TAG_NAME }}#" -e "s#201412030952#${{ env.MODIFIED_TIME }}#" ../pre/$i
-              perl ../addChecksum.pl ../pre/$i
+              cat ../$titleName $i > ../publish/$i
+              sed -i -e "s#201412030951#${{ env.TAG_NAME }}#" -e "s#201412030952#${{ env.MODIFIED_TIME }}#" ../publish/$i
+              perl ../addChecksum.pl ../publish/$i
             fi
           done
 
+      - name: Release and upload assets
+        uses: softprops/action-gh-release@v1
+        with:
+          name: ${{ env.RELEASE_NAME }}
+          tag_name: ${{ env.TAG_NAME }}
+          draft: false
+          prerelease: false
+          files: |
+            ./publish/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Git push assets to "master" branch
         run: |
-          cd pre
+          cd publish
           git init
           git config --local user.name "actions"
           git config --local user.email "action@github.com"

@@ -80,20 +80,21 @@ jobs:
 
       - name: Check files
         run: |
+          mkdir -p ./publish
           cd ./old
           for i in $(ls *.txt); do
-            cp -f $i ../pre/$i
+            cp -f $i ../publish/$i
           done
           cd ../new
           for i in $(ls *.txt); do
             if [ -s $i ]; then
-              cp -f $i ../pre/$i
+              cp -f $i ../publish/$i
             fi
           done
 
       - name: Git push assets to "master" branch
         run: |
-          cd pre
+          cd publish
           git init
           git config --local user.name "actions"
           git config --local user.email "action@github.com"
