@@ -5,8 +5,7 @@ on:
   push:
     branches:
       - workplace
-    paths-ignore:
-      - "**/README.md"
+
 jobs:
   build:
     name: Build
