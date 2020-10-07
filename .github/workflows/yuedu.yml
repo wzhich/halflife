@@ -41,7 +41,7 @@ jobs:
         uses: actions/checkout@v2
         with:
           ref: master
-          path: pre
+          path: old
 
       - name: Get ShuYuan files
         run: |
@@ -80,7 +80,11 @@ jobs:
 
       - name: Check files
         run: |
-          cd ./new
+          cd ./old
+          for i in $(ls *.txt); do
+            cp -f $i ../pre/$i
+          done
+          cd ../new
           for i in $(ls *.txt); do
             if [ -s $i ]; then
               cp -f $i ../pre/$i
