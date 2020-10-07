@@ -72,7 +72,7 @@ jobs:
           cat xinggsf-mv.txt easylistchina.txt cjxlist.txt cjx-annoyance.txt easyprivacy.txt > ../new/ad3.txt
           cat antiadblockfilters.txt abp-filters-anti-cv.txt anti-adblock-killer-filters.txt > ../new/ad-edentw.txt
           for i in $(ls ./new/*.txt); do
-            sed -i 's#^$##' $i
+            sed -i '/^$/d' $i
           done
 
       - name: Diff and addChecksum
