@@ -56,12 +56,12 @@ jobs:
         run: |
           mkdir -p ./pre/
           cd ./new
-          cat ../ad-pc-title.txt ../GeneralBlock.txt ../TiebaBlock.txt easylist.txt easylistchina.txt easyprivacy.txt cjx-annoyance.txt xinggsf-mv.txt > ../pre/ad-pc.txt
-          cat ../ad-mo-title.txt ../GeneralBlock.txt easylist.txt easylistchina.txt easyprivacy.txt cjx-annoyance.txt > ../pre/ad-mo.txt
-          cat ../ad-title.txt ../GeneralBlock.txt ../TiebaBlock.txt xinggsf-mv.txt easylistchina.txt cjxlist.txt cjx-annoyance.txt > ../pre/ad.txt
-          cat ../ad2-title.txt xinggsf-mv.txt easylistchina.txt cjxlist.txt cjx-annoyance.txt > ../pre/ad2.txt
-          cat ../ad3-title.txt xinggsf-mv.txt easylistchina.txt cjxlist.txt cjx-annoyance.txt easyprivacy.txt > ../pre/ad3.txt
-          cat ../ad4-title.txt antiadblockfilters.txt abp-filters-anti-cv.txt anti-adblock-killer-filters.txt > ../pre/ad-edentw.txt
+          find ../ -name "ad-pc-title.txt" -o -name "GeneralBlock.txt" -o -name "TiebaBlock.txt" -o -name "easylist.txt" -o -name "easylistchina.txt" -o -name "easyprivacy.txt" -o -name "cjx-annoyance.txt" -o -name "xinggsf-mv.txt" | xargs sed '$a \n' > ../pre/ad-pc.txt
+          find ../ -name "ad-mo-title.txt" -o -name "GeneralBlock.txt" -o -name "easylist.txt" -o -name "easylistchina.txt" -o -name "easyprivacy.txt" -o -name "cjx-annoyance.txt" | xargs sed '$a \n' > ../pre/ad-mo.txt
+          find ../ -name "ad-title.txt" -o -name "GeneralBlock.txt" -o -name "TiebaBlock.txt" -o -name "xinggsf-mv.txt" -o -name "easylistchina.txt" -o -name "cjxlist.txt" -o -name "cjx-annoyance.txt" | xargs sed '$a \n' > ../pre/ad.txt
+          find ../ -name "ad2-title.txt" -o -name "xinggsf-mv.txt" -o -name "easylistchina.txt" -o -name "cjxlist.txt" -o -name "cjx-annoyance.txt" | xargs sed '$a \n' > ../pre/ad2.txt
+          find ../ -name "ad3-title.txt" -o -name "xinggsf-mv.txt" -o -name "easylistchina.txt" -o -name "cjxlist.txt" -o -name "cjx-annoyance.txt" -o -name "easyprivacy.txt" | xargs sed '$a \n' > ../pre/ad3.txt
+          find ../ -name "ad4-title.txt" -o -name "antiadblockfilters.txt" -o -name "abp-filters-anti-cv.txt" -o -name "anti-adblock-killer-filters.txt" | xargs sed '$a \n' > ../pre/ad-edentw.txt
 
       - name: addChecksum
         run: |
