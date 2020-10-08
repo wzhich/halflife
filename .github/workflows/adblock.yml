@@ -121,7 +121,6 @@ jobs:
           sed -i '/url =/d' ./.git/config
           git config --local user.name "actions"
           git config --local user.email "action@github.com"
-          git checkout -b master
           git add .
           git commit -m "${{ env.RELEASE_NAME }}"
           git remote set-url --add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
