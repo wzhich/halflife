@@ -3,8 +3,8 @@ on:
   schedule:
     - cron: "0 */4 * * *"
   push:
-    tags:
-      - "adblock*"
+    branch:
+      - "workplace"
 
 jobs:
   build:
