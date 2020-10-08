@@ -128,12 +128,9 @@ jobs:
         run: |
           cd publish
           sed -i '/coding.net/d' ./.git/config
-          git ls-remote --tags origin
           tagname="$(git ls-remote --tags origin |tail -n +6 |grep -o '[0-9]\{12\}$')"
           if [ -n "$tagname" ]; then
-            echo "$tagname"
             for t in "$tagname" ; do
-              echo "$t"
-              #git push origin :refs/tags/"$t"
+              git push origin :refs/tags/"$t"
             done
           fi
