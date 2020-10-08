@@ -2,11 +2,11 @@ name: Build adblock rules files
 on:
   schedule:
     - cron: "0 */4 * * *"
-  push:
-    branch:
-      - "workplace"
+#  push:
+#    branch:
+#      - "workplace"
 env:
-  PUSH_TO_RELEASE: true
+  PUSH_TO_RELEASE: false
   CLEAN_TAGS: false
 jobs:
   build:

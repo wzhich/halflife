@@ -97,16 +97,16 @@ jobs:
 
       - name: Git push assets to "master" branch
         run: |
-          cd publish
-          git init
+          cp -rf ./publish/* ./old/
+          cd ./old
+          sed -i '/url =/d' ./.git/config
           git config --local user.name "actions"
           git config --local user.email "action@github.com"
-          git checkout -b master
           git add .
           git commit -m "${{ env.RELEASE_NAME }}"
-          git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
+          git remote set-url --add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
           git remote set-url --add origin "https://${{ secrets.CODING_ACCOUNT }}:${{ secrets.CODING_PASSWORD }}@e.coding.net/${{ secrets.CODING_NAME }}/list.git"
-          git push -f -u origin master
+          git push -u origin master
 
       - name: Cleanup tags
         if: env.CLEAN_TAGS == 'true'
