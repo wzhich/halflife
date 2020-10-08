@@ -200,6 +200,8 @@ xhamster.com##.sponsorBottom
 ||zhongxinghuanyu.com^$third-party
 ||zedo.com^$third-party
 ||zencdn.net^$domain=freegaypornsex.net|www.gayvl.info
+! 2345
+@@||union2.50bang.org^$third-party
 ! 6park
 !|http:$third-party,image,domain=www.6park.com
 !|https:$third-party,image,domain=www.6park.com
