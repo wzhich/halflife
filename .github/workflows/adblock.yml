@@ -2,10 +2,12 @@ name: Build adblock rules files
 on:
   schedule:
     - cron: "0 */4 * * *"
-  push:
-    branch:
-      - "workplace"
-
+#  push:
+#    branch:
+#      - "workplace"
+env:
+  PUSH_TO_RELEASE: true
+  CLEAN_TAGS: false
 jobs:
   build:
     name: Build
@@ -101,6 +103,7 @@ jobs:
 
       - name: Release and upload assets
         uses: softprops/action-gh-release@v1
+        if: env.PUSH_TO_RELEASE == 'true'
         with:
           name: ${{ env.RELEASE_NAME }}
           tag_name: ${{ env.TAG_NAME }}
@@ -125,6 +128,7 @@ jobs:
           git push -f -u origin master
 
       - name: Cleanup tags
+        if: env.CLEAN_TAGS == 'true'
         run: |
           cd publish
           sed -i '/coding.net/d' ./.git/config
