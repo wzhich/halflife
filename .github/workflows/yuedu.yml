@@ -1,10 +1,10 @@
 name: Build YueDu Sources files
 on:
   schedule:
-    - cron: "0 6 * * *"
-#  push:
-#    branches:
-#      - workplace
+    - cron: "0 21 * * *"
+  push:
+    tags:
+      - "yuedu*"
 
 jobs:
   build:
