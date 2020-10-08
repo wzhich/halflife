@@ -123,3 +123,10 @@ jobs:
           git remote add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
           git remote set-url --add origin "https://${{ secrets.CODING_ACCOUNT }}:${{ secrets.CODING_PASSWORD }}@e.coding.net/${{ secrets.CODING_NAME }}/list.git"
           git push -f -u origin master
+          tagname="$(git ls-remote --tags origin |tail -n +6 |grep -o '[0-9v.]\+$')"
+          if [ -n "$tagname" ]; then
+            for t in $tagname ; do
+              #删除远端tag
+              git push origin :refs/tags/$t
+            done
+          fi
