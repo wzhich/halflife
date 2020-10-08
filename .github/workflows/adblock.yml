@@ -130,7 +130,7 @@ jobs:
           sed -i '/coding.net/d' ./.git/config
           tagname="$(git ls-remote --tags origin |tail -n +6 |grep -o '[0-9]\{12\}$')"
           if [ -n "$tagname" ]; then
-            for t in "$tagname" ; do
+            for t in $tagname ; do
               git push origin :refs/tags/"$t"
             done
           fi
