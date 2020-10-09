@@ -79,25 +79,19 @@ jobs:
 
       - name: Diff and addChecksum
         run: |
-          mkdir -p ./diff/
-          mkdir -p ./publish/
+          mkdir -p ./old_no_title/
           chmod +x addChecksum.pl
           cd ./old/
           for i in $(ls *.txt); do
-            sed '1,/^!$/d' ../old/$i > ../diff/$i
-          done
-          for i in $(ls -l | grep ^[^d] | awk '{print $9}'|grep -v '^ad*' ); do
-            cp -f ../old/$i ../publish/$i
+            sed '1,/^!$/d' $i > ../old_no_title/$i
           done
           cd ../new
           for i in $(ls *.txt); do
-            if diff -q $i ../diff/$i; then
-              cp -f ../old/$i ../publish/$i
-            else
+            if ! diff -q $i ../old_no_title/$i; then
               titleName=$(echo "$i" |sed 's#.txt#-title.txt#')
-              cat ../$titleName $i > ../publish/$i
-              sed -i -e "s#201412030951#${{ env.TAG_NAME }}#" -e "s#201412030952#${{ env.MODIFIED_TIME }}#" ../publish/$i
-              perl ../addChecksum.pl ../publish/$i
+              cat ../$titleName $i > ../old/$i
+              sed -i -e "s#201412030951#${{ env.TAG_NAME }}#" -e "s#201412030952#${{ env.MODIFIED_TIME }}#" ../old/$i
+              perl ../addChecksum.pl ../old/$i
             fi
           done
 
@@ -110,13 +104,12 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            ./publish/*
+            ./old/*
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Git push assets to "master" branch
         run: |
-          cp -rf ./publish/* ./old/
           cd ./old
           sed -i '/url =/d' ./.git/config
           git config --local user.name "actions"
@@ -130,7 +123,7 @@ jobs:
       - name: Cleanup tags
         if: env.CLEAN_TAGS == 'true'
         run: |
-          cd publish
+          cd ./old
           sed -i '/coding.net/d' ./.git/config
           tagname="$(git ls-remote --tags origin |tail -n +6 |grep -o '[0-9]\{12\}$')"
           if [ -n "$tagname" ]; then
