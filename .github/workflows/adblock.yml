@@ -95,6 +95,14 @@ jobs:
             fi
           done
 
+      - name: Deliver AllFiles
+        uses: actions/upload-artifact@v2
+        with:
+          name: AllFiles
+          path: |
+            ./old_no_title/
+            ./new/
+
       - name: Release and upload assets
         uses: softprops/action-gh-release@v1
         if: env.PUSH_TO_RELEASE == 'true'
@@ -114,7 +122,7 @@ jobs:
           sed -i '/url =/d' ./.git/config
           git config --local user.name "actions"
           git config --local user.email "action@github.com"
-          git add .
+          git add -all
           git commit -m "${{ env.RELEASE_NAME }}"
           git remote set-url --add origin "https://${{ github.actor }}:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}"
           git remote set-url --add origin "https://${{ secrets.CODING_ACCOUNT }}:${{ secrets.CODING_PASSWORD }}@e.coding.net/${{ secrets.CODING_NAME }}/list.git"
