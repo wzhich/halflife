@@ -82,18 +82,19 @@ jobs:
           mkdir -p ./old_no_title/
           chmod +x addChecksum.pl
           cd ./old/
-          for i in $(ls *.txt); do
+          for i in $(ls ad*.txt); do
             sed '1,/^!$/d' $i > ../old_no_title/$i
           done
-          cd ../new
-          for i in $(ls *.txt); do
-            if ! diff -q $i ../old_no_title/$i; then
+          cd ..
+          diffFile="$(diff -q new/ old_no_title/ |grep -o '[a-zA-Z0-9-]\+.txt' |sort -u)"
+          if [ -n "$diffFile" ]; then
+            for i in $diffFile ; do
               titleName=$(echo "$i" |sed 's#.txt#-title.txt#')
-              cat ../$titleName $i > ../old/$i
-              sed -i -e "s#201412030951#${{ env.TAG_NAME }}#" -e "s#201412030952#${{ env.MODIFIED_TIME }}#" ../old/$i
-              perl ../addChecksum.pl ../old/$i
-            fi
-          done
+              cat $titleName ./new/$i > ./old/$i
+              sed -i -e "s#201412030951#$TAG_NAME#" -e "s#201412030952#$MODIFIED_TIME#" ./old/$i
+              perl ./addChecksum.pl ./old/$i
+            done
+          fi
 
       - name: Deliver AllFiles
         uses: actions/upload-artifact@v2
