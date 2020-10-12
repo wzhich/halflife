@@ -59,14 +59,14 @@ jobs:
           curl -sSL $ANTIADBLOCKFILTERS_URL | sed -e '1c ! Adblock Warning Removal List' -e '/^! Checksum/,/! Please check our guidelines/d' -e '/^!$/d' -e '/The End/d'  -e '/^$/d' > ./download/antiadblockfilters.txt
           curl -sSL $ABP_FILTERS_ANTI_CV_URL | sed -e '1c ! abp-filters-anti-cv' -e '/^! Checksum/,/adblockplus.org/d' -e '/^!$/d' -e '/The End/d'  -e '/^$/d' > ./download/abp-filters-anti-cv.txt
           curl -sSL $ANTI_ADBLOCK_KILLER_FILTERS_URL | sed -e '1c ! AakList (Anti-Adblock Killer)' -e '/^! Title/,/^! RegExpVisualizer/d' -e '/^!$/d' -e '/The End/d'  -e '/^$/d' > ./download/anti-adblock-killer-filters.txt
-          for i in $(ls ./download/*.txt); do
-            echo "" >> $i
-          done
 
       - name: Generate adblock files
         run: |
           mkdir -p ./new/
           cd ./download
+          for i in $(ls *.txt); do
+            echo "" >> $i
+          done
           cat ../GeneralBlock.txt ../TiebaBlock.txt easylist.txt easylistchina.txt easyprivacy.txt cjx-annoyance.txt xinggsf-mv.txt > ../new/ad-pc.txt
           cat ../GeneralBlock.txt easylist.txt easylistchina.txt easyprivacy.txt cjx-annoyance.txt > ../new/ad-mo.txt
           cat ../GeneralBlock.txt ../TiebaBlock.txt xinggsf-mv.txt easylistchina.txt cjxlist.txt cjx-annoyance.txt > ../new/ad.txt
