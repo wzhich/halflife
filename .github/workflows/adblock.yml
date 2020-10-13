@@ -2,9 +2,9 @@ name: Build adblock rules files
 on:
   schedule:
     - cron: "0 */4 * * *"
-  push:
-    branch:
-      - "workplace"
+#  push:
+#    branch:
+#      - "workplace"
 env:
   PUSH_TO_RELEASE: false
 jobs:
@@ -95,10 +95,13 @@ jobs:
               perl ./addChecksum.pl ./old/$i
               echo "::set-output name=status::success"
             done
+          else
+            echo "::set-output name=status::null"
           fi
 
       - name: Deliver AllFiles
         uses: actions/upload-artifact@v2
+        if: steps.diffResult.outputs.status == 'null'
         with:
           name: AllFiles
           path: |
