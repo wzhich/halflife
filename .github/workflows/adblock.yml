@@ -60,18 +60,21 @@ jobs:
           curl -sSL $ANTIADBLOCKFILTERS_URL | sed -e '1c ! Adblock Warning Removal List' -e '/^! Checksum/,/! Please check our guidelines/d' -e '/^!$/d' -e '/The End/d'  -e '/^$/d' > ./antiadblockfilters.txt
           curl -sSL $ABP_FILTERS_ANTI_CV_URL | sed -e '1c ! abp-filters-anti-cv' -e '/^! Checksum/,/adblockplus.org/d' -e '/^!$/d' -e '/The End/d'  -e '/^$/d' > ./abp-filters-anti-cv.txt
           curl -sSL $ANTI_ADBLOCK_KILLER_FILTERS_URL | sed -e '1c ! AakList (Anti-Adblock Killer)' -e '/^! Title/,/^! RegExpVisualizer/d' -e '/^!$/d' -e '/The End/d'  -e '/^$/d' > ./anti-adblock-killer-filters.txt
-          if [ -s "*.txt" ]; then
-            echo "::set-output name=status::success"
-          fi
+          for i in $(ls *.txt); do
+            if [[ `cat $i |wc -l` -eq 0 ]]; then
+              echo "::set-output name=status::failed"
+              break
+            else
+              echo "::set-output name=status::success"
+              echo "" >> $i
+            fi
+          done
 
       - name: Generate adblock files
         if: steps.download.outputs.status == 'success'
         run: |
           mkdir -p ./new/
           cd ./download
-          for i in $(ls *.txt); do
-            echo "" >> $i
-          done
           cat ../GeneralBlock.txt ../TiebaBlock.txt easylist.txt easylistchina.txt easyprivacy.txt cjx-annoyance.txt xinggsf-mv.txt > ../new/ad-pc.txt
           cat ../GeneralBlock.txt easylist.txt easylistchina.txt easyprivacy.txt cjx-annoyance.txt > ../new/ad-mo.txt
           cat ../GeneralBlock.txt ../TiebaBlock.txt xinggsf-mv.txt easylistchina.txt cjxlist.txt cjx-annoyance.txt > ../new/ad.txt
@@ -103,12 +106,12 @@ jobs:
               echo "::set-output name=status::success"
             done
           else
-            echo "::set-output name=status::null"
+            echo "::set-output name=status::failed"
           fi
 
       - name: Deliver download Dir
         uses: actions/upload-artifact@v2
-        if: steps.download.outputs.status == 'null'
+        if: steps.download.outputs.status == 'failed'
         with:
           name: AllFiles
           path: |
@@ -116,7 +119,7 @@ jobs:
 
       - name: Deliver new and old_no_title Di
         uses: actions/upload-artifact@v2
-        if: steps.diffResult.outputs.status == 'null'
+        if: steps.diffResult.outputs.status == 'failed'
         with:
           name: AllFiles
           path: |
