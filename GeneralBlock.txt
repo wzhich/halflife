@@ -248,6 +248,8 @@ chaturbate.com##.banner
 junshi.china.com###mod-box
 junshi.china.com##.w_xiao>.side_bdgg
 toutiao.china.com###js-free-time-show
+! COCOmanhua
+@@||cdndx.clouddata8g.xyz^$script,domain=www.cocomanhua.com
 ! 低端影视
 ||ddrk.me/vjs-plugins/videojs.das.min.js
 !通用去除dplayer播放器logo   https://bbs.kafan.cn/forum.php?mod=redirect&goto=findpost&ptid=2180923&pid=46929896
