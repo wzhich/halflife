@@ -74,7 +74,7 @@ jobs:
           split -l 400 yuedu-all.txt yueduid
           #获取订阅源文件
           for i in $(ls yueduid*);do
-            curl -s -o $i.txt "$RSSYUAN_JSON_URL$(sed ':a;N;s/\n/-/g;ta' $i)" -H "$USERAGENT" -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" -H "$ACCEPTLANGUAGE" -H "Connection: keep-alive" -H "Upgrade-Insecure-Requests: 1"
+            curl -s -o $i.txt "$RSSYUAN_JSON_URL?id=$(sed ':a;N;s/\n/-/g;ta' $i)" -H "$USERAGENT" -H "Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8" -H "$ACCEPTLANGUAGE" -H "Connection: keep-alive" -H "Upgrade-Insecure-Requests: 1"
             sed -i -e 's#^\[#,#' -e 's#\]$##' $i.txt
           done
           #合并订阅源文件
